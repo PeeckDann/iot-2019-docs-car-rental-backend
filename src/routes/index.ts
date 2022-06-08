@@ -1,5 +1,7 @@
 import express from 'express';
 
+import authRoutes from './auth';
+import { checkAuth } from '../middleware/auth';
 import clientRoutes from './client';
 // import fullNameRoutes from './fullName';
 // import addressRoutes from './address';
@@ -10,6 +12,8 @@ import clientRoutes from './client';
 
 const router = express.Router();
 
+router.use(authRoutes);
+router.use(checkAuth);
 router.use(clientRoutes);
 // router.use(fullNameRoutes);
 // router.use(addressRoutes);

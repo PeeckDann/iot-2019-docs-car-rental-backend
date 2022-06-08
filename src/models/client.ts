@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { ExtendedModel } from '../utils/dbHelper';
 import db from '../db';
+import { generateDefaultClientData } from './hooks/client';
 
 class Client extends ExtendedModel {
   public email!: string;
@@ -20,7 +21,12 @@ Client.init(
   },
   {
     sequelize: db,
-    modelName: 'client'
+    modelName: 'client',
+    hooks: {
+      async afterCreate(clientInstance) {
+        await generateDefaultClientData(clientInstance);
+      }
+    }
   }
 );
 

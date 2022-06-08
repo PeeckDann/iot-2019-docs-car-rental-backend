@@ -15,7 +15,7 @@ export default class ClientController {
       const client = await this.clientDAO.getClientById(clientId);
       res.send(client);
     } catch (e) {
-      handleEndpointError(e, res);
+      handleEndpointError(e, res, 400);
     }
   }
 
@@ -24,7 +24,7 @@ export default class ClientController {
       const clients = await this.clientDAO.getClients();
       res.send(clients);
     } catch (e) {
-      handleEndpointError(e, res);
+      handleEndpointError(e, res, 400);
     }
   }
 
@@ -34,7 +34,7 @@ export default class ClientController {
       await this.clientDAO.createClient(newClient);
       res.sendStatus(201);
     } catch (e) {
-      handleEndpointError(e, res);
+      handleEndpointError(e, res, 400);
     }
   }
 
@@ -43,7 +43,7 @@ export default class ClientController {
       await this.clientDAO.createClientsFromCSV();
       res.sendStatus(201);
     } catch (e) {
-      handleEndpointError(e, res);
+      handleEndpointError(e, res, 400);
     }
   }
 
@@ -54,7 +54,7 @@ export default class ClientController {
       await this.clientDAO.updateClient(clientId, updatedClient);
       res.sendStatus(200);
     } catch (e) {
-      handleEndpointError(e, res);
+      handleEndpointError(e, res, 400);
     }
   }
 
@@ -64,7 +64,7 @@ export default class ClientController {
       await this.clientDAO.deleteClient(clientId);
       res.sendStatus(200);
     } catch (e) {
-      handleEndpointError(e, res);
+      handleEndpointError(e, res, 400);
     }
   }
 }
