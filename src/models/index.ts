@@ -20,6 +20,15 @@ Client.hasOne(Address, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
+Client.hasOne(AmountOfMoney, {
+  as: 'balance',
+  foreignKey: {
+    name: 'clientId',
+    allowNull: true
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
 Client.hasMany(Agreement, {
   foreignKey: {
     allowNull: false
@@ -35,6 +44,15 @@ Car.hasMany(Agreement, {
   onDelete: 'NO ACTION',
   onUpdate: 'NO ACTION'
 });
+Car.hasOne(AmountOfMoney, {
+  as: 'rentalCost',
+  foreignKey: {
+    name: 'carId',
+    allowNull: true
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
 
 Agreement.hasMany(Fine, {
   foreignKey: {
@@ -43,17 +61,7 @@ Agreement.hasMany(Fine, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-
-AmountOfMoney.belongsTo(Client, {
-  as: 'balance',
-  foreignKey: {
-    name: 'clientId',
-    allowNull: true
-  },
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-AmountOfMoney.belongsTo(Agreement, {
+Agreement.hasOne(AmountOfMoney, {
   as: 'collateralAmount',
   foreignKey: {
     name: 'agreementId',
@@ -62,19 +70,11 @@ AmountOfMoney.belongsTo(Agreement, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-AmountOfMoney.belongsTo(Fine, {
+
+Fine.hasOne(AmountOfMoney, {
   as: 'fineAmount',
   foreignKey: {
     name: 'fineId',
-    allowNull: true
-  },
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-AmountOfMoney.belongsTo(Car, {
-  as: 'rentalCost',
-  foreignKey: {
-    name: 'carId',
     allowNull: true
   },
   onDelete: 'CASCADE',

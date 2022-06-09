@@ -4,10 +4,11 @@ import Client from '../models/client';
 
 export default class ClientDAO {
   public async getClientById(clientId): Promise<Client> {
-    return await models.Client.findOne({
+    const clientInstance = await models.Client.findOne({
       where: { id: clientId },
-      raw: true
+      include: { all: true, nested: true }
     });
+    return clientInstance.get({ plain: true });
   }
 
   public async getClientByEmail(email): Promise<Client> {
@@ -18,7 +19,12 @@ export default class ClientDAO {
   }
 
   public async getClients(): Promise<Client[]> {
-    return await models.Client.findAll({ raw: true });
+    const clientInstances = await models.Client.findAll({
+      include: { all: true, nested: true }
+    });
+    return clientInstances.map((clientInstance) => {
+      return clientInstance.get({ plain: true });
+    });
   }
 
   public async createClient(newClient): Promise<void> {

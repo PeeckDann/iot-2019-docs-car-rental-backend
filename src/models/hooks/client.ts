@@ -7,4 +7,8 @@ export const generateDefaultClientData = async (clientInstance): Promise<void> =
     buildingNumber: 69,
     flatNumber: 420
   });
+  await clientInstance.createBalance({
+    hryvnias: 2,
+    kopiykas: 28
+  });
 };
