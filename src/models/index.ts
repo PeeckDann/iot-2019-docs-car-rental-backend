@@ -33,16 +33,16 @@ Client.hasMany(Agreement, {
   foreignKey: {
     allowNull: false
   },
-  onDelete: 'NO ACTION',
-  onUpdate: 'NO ACTION'
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
 });
 
 Car.hasMany(Agreement, {
   foreignKey: {
     allowNull: false
   },
-  onDelete: 'NO ACTION',
-  onUpdate: 'NO ACTION'
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
 });
 Car.hasOne(AmountOfMoney, {
   as: 'rentalCost',

@@ -18,19 +18,19 @@ Address.init(
     },
     city: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: false
     },
     street: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: false
     },
     buildingNumber: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     },
     flatNumber: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     }
   },
   {

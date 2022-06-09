@@ -32,7 +32,7 @@ export default class FineController {
   public async createFine(req: Request, res: Response) {
     try {
       const { agreementId } = req.params;
-      const { newFine } = req.body;
+      const newFine = req.body;
       await this.fineDAO.createFine(agreementId, newFine);
       res.sendStatus(201);
     } catch (e) {

@@ -1,12 +1,18 @@
 import { Request, Response } from 'express';
 import { handleEndpointError } from '../utils/errorHandler';
 import ClientDAO from '../dao/client';
+import FullNameDAO from '../dao/fullName';
+import AddressDAO from '../dao/address';
 
 export default class ClientController {
   private clientDAO: ClientDAO;
+  private fullNameDAO: FullNameDAO;
+  private addressDAO: AddressDAO;
 
   constructor() {
     this.clientDAO = new ClientDAO();
+    this.fullNameDAO = new FullNameDAO();
+    this.addressDAO = new AddressDAO();
   }
 
   public async getClientById(req: Request, res: Response) {
@@ -30,8 +36,10 @@ export default class ClientController {
 
   public async createClient(req: Request, res: Response) {
     try {
-      const newClient = req.body;
-      await this.clientDAO.createClient(newClient);
+      const { newClient, newFullName, newAddress } = req.body;
+      const client = await this.clientDAO.createAndGetClient(newClient);
+      await this.fullNameDAO.createFullName(client.id, newFullName);
+      await this.addressDAO.createAddress(client.id, newAddress);
       res.sendStatus(201);
     } catch (e) {
       handleEndpointError(e, res, 400);

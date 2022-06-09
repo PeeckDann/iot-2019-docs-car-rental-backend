@@ -16,11 +16,11 @@ FullName.init(
     },
     surname: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: false
     },
     patronymic: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: false
     }
   },
   {

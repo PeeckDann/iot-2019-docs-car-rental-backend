@@ -27,10 +27,6 @@ export default class ClientDAO {
     });
   }
 
-  public async createClient(newClient): Promise<void> {
-    await models.Client.create(newClient);
-  }
-
   public async createAndGetClient(newClient): Promise<Client> {
     return await models.Client.create(newClient);
   }

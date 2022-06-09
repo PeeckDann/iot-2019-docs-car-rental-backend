@@ -1,24 +1,33 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import config from 'config';
-import ClientDAO from '../dao/client';
 import { handleEndpointError, CustomError } from '../utils/errorHandler';
+import ClientDAO from '../dao/client';
+import FullNameDAO from '../dao/fullName';
+import AddressDAO from '../dao/address';
 
 const authConfig = config.get('authConfig');
 
 export default class AuthController {
   private clientDAO: ClientDAO;
+  private fullNameDAO: FullNameDAO;
+  private addressDAO: AddressDAO;
 
   constructor() {
     this.clientDAO = new ClientDAO();
+    this.fullNameDAO = new FullNameDAO();
+    this.addressDAO = new AddressDAO();
   }
 
   public async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
+      const { newClient, newFullName, newAddress } = req.body;
+      const { email, password } = newClient;
       let client = await this.clientDAO.getClientByEmail(email);
       if (!client) {
-        client = await this.clientDAO.createAndGetClient({ email, password });
+        client = await this.clientDAO.createAndGetClient(newClient);
+        await this.fullNameDAO.createFullName(client.id, newFullName);
+        await this.addressDAO.createAddress(client.id, newAddress);
       } else {
         this.verifyClient(client, password);
       }
