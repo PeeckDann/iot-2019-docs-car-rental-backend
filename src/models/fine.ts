@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { ExtendedModel } from '../utils/dbHelper';
 import db from '../db';
+import { generateDefaultFineData } from './hooks/fine';
 
 class Fine extends ExtendedModel {
   public reason!: string;
@@ -15,7 +16,12 @@ Fine.init(
   },
   {
     sequelize: db,
-    modelName: 'fine'
+    modelName: 'fine',
+    hooks: {
+      async afterCreate(fineInstance) {
+        await generateDefaultFineData(fineInstance);
+      }
+    }
   }
 );
 

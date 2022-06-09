@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { ExtendedModel } from '../utils/dbHelper';
 import db from '../db';
+import { generateDefaultCarData } from './hooks/car';
 
 class Car extends ExtendedModel {
   public brand!: string;
@@ -25,7 +26,12 @@ Car.init(
   },
   {
     sequelize: db,
-    modelName: 'car'
+    modelName: 'car',
+    hooks: {
+      async afterCreate(carInstance) {
+        await generateDefaultCarData(carInstance);
+      }
+    }
   }
 );
 
