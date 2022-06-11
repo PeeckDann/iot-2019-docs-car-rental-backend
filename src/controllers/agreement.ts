@@ -1,12 +1,16 @@
 import { Request, Response } from 'express';
-import { handleEndpointError } from '../utils/errorHandler';
+import { CustomError, handleEndpointError } from '../utils/errorHandler';
 import AgreementDAO from '../dao/agreement';
+import AmountOfMoneyDAO from '../dao/amountOfMoney';
+import AmountOfMoney from '../models/amountOfMoney';
 
 export default class AgreementController {
   private agreementDAO: AgreementDAO;
+  private amountOfMoneyDAO: AmountOfMoneyDAO;
 
   constructor() {
     this.agreementDAO = new AgreementDAO();
+    this.amountOfMoneyDAO = new AmountOfMoneyDAO();
   }
 
   public async getAgreementById(req: Request, res: Response) {
@@ -30,12 +34,26 @@ export default class AgreementController {
     }
   }
 
-  public async createAgreement(req: Request, res: Response) {
+  public async issueAgreement(req: Request, res: Response) {
     try {
       //@ts-ignore
       const clientId = req.client.id;
-      const { carId, newAgreement } = req.body;
-      await this.agreementDAO.createAgreement(clientId, carId, newAgreement);
+      const { carId, newAgreement, newCollateralAmount } = req.body;
+
+      const clientBalance = await this.amountOfMoneyDAO.getBalance(clientId);
+      const carRentalCost = await this.amountOfMoneyDAO.getRentalCost(carId);
+
+      //@ts-ignore
+      const totalCost = AmountOfMoney.addAmounts(carRentalCost, newCollateralAmount);
+      //@ts-ignore
+      const newClientBalance = AmountOfMoney.subtractAmounts(clientBalance, totalCost);
+      if (!newClientBalance) {
+        throw new CustomError('Balance is not sufficient!');
+      }
+
+      const agreement = await this.agreementDAO.createAndGetAgreement(clientId, carId, newAgreement);
+      await this.amountOfMoneyDAO.createCollateralAmount(agreement.id, newCollateralAmount);
+      await this.amountOfMoneyDAO.updateBalance(clientId, newClientBalance);
       res.sendStatus(201);
     } catch (e) {
       handleEndpointError(e, res, 400);
@@ -51,11 +69,20 @@ export default class AgreementController {
     }
   }
 
-  public async updateAgreement(req: Request, res: Response) {
+  public async closeAgreement(req: Request, res: Response) {
     try {
+      //@ts-ignore
+      const clientId = req.client.id;
       const { agreementId } = req.params;
-      const updatedAgreement = req.body;
-      await this.agreementDAO.updateAgreement(agreementId, updatedAgreement);
+
+      const clientBalance = await this.amountOfMoneyDAO.getBalance(clientId);
+      const collateralAmount = await this.amountOfMoneyDAO.getCollateralAmount(agreementId);
+
+      //@ts-ignore
+      const newClientBalance = AmountOfMoney.addAmounts(clientBalance, collateralAmount);
+
+      await this.amountOfMoneyDAO.updateBalance(clientId, newClientBalance);
+      await this.agreementDAO.updateAgreementArchievedStatus(agreementId);
       res.sendStatus(200);
     } catch (e) {
       handleEndpointError(e, res, 400);

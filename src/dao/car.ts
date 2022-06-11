@@ -24,10 +24,6 @@ export default class CarDAO {
     await models.Car.create(newCar);
   }
 
-  public async createAndGetCar(newCar): Promise<Car> {
-    return await models.Car.create(newCar);
-  }
-
   public async createCarsFromCSV(): Promise<void> {
     // await models.Car.bulkCreate(new CSVReader().getParsedData('car'));
   }

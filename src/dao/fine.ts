@@ -25,10 +25,6 @@ export default class FineDAO {
     await models.Fine.create({ agreementId, ...newFine });
   }
 
-  public async createAndGetFine(newFine): Promise<Fine> {
-    return await models.Fine.create(newFine);
-  }
-
   public async createFinesFromCSV(): Promise<void> {
     // await models.Fine.bulkCreate(new CSVReader().getParsedData('fine'));
   }

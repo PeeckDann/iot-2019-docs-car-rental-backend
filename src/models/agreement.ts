@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { ExtendedModel } from '../utils/dbHelper';
 import db from '../db';
-import { generateDefaultAgreementData } from './hooks/agreement';
 
 class Agreement extends ExtendedModel {
   public issueingDate!: number;
@@ -26,12 +25,7 @@ Agreement.init(
   },
   {
     sequelize: db,
-    modelName: 'agreement',
-    hooks: {
-      async afterCreate(agreementInstance) {
-        await generateDefaultAgreementData(agreementInstance);
-      }
-    }
+    modelName: 'agreement'
   }
 );
 

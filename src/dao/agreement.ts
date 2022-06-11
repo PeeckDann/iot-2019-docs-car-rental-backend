@@ -21,12 +21,8 @@ export default class AgreementDAO {
     });
   }
 
-  public async createAgreement(clientId, carId, newAgreement): Promise<void> {
-    await models.Agreement.create({ clientId, carId, ...newAgreement });
-  }
-
-  public async createAndGetAgreement(newAgreement): Promise<Agreement> {
-    return await models.Agreement.create(newAgreement);
+  public async createAndGetAgreement(clientId, carId, newAgreement): Promise<Agreement> {
+    return await models.Agreement.create({ clientId, carId, ...newAgreement });
   }
 
   public async createAgreementsFromCSV(): Promise<void> {
@@ -35,6 +31,10 @@ export default class AgreementDAO {
 
   public async updateAgreement(agreementId, updatedAgreement): Promise<void> {
     await models.Agreement.update(updatedAgreement, { where: { id: agreementId } });
+  }
+
+  public async updateAgreementArchievedStatus(agreementId): Promise<void> {
+    await models.Agreement.update({ isArchived: true }, { where: { id: agreementId } });
   }
 
   public async deleteAgreement(agreementId): Promise<void> {
