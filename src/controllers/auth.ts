@@ -25,6 +25,7 @@ export default class AuthController {
       const { email, password } = newClient;
       let client = await this.clientDAO.getClientByEmail(email);
       if (!client) {
+        this.verifyClientData(newFullName, newAddress);
         client = await this.clientDAO.createAndGetClient(newClient);
         await this.fullNameDAO.createFullName(client.id, newFullName);
         await this.addressDAO.createAddress(client.id, newAddress);
@@ -39,9 +40,15 @@ export default class AuthController {
     }
   }
 
+  private verifyClientData(newFullName, newAddress) {
+    if (!newFullName || !newAddress) {
+      throw new CustomError('You have to sign up first!');
+    }
+  }
+
   private verifyClient(client, password) {
     if (client.password !== password) {
-      throw new CustomError('Wrong credentials!');
+      throw new CustomError('Wrong password!');
     }
   }
 }
