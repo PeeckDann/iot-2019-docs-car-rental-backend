@@ -10,6 +10,6 @@ router.get('/agreements/:agreementId/fines', fineController.getFines.bind(fineCo
 router.post('/agreements/:agreementId/fines', fineController.createFine.bind(fineController));
 router.post('/agreements/:agreementId/fines/fill-db/csv', fineController.createFinesFromCSV.bind(fineController));
 router.put('/agreements/:agreementId/fines/:fineId', fineController.updateFine.bind(fineController));
-router.delete('/agreements/:agreementId/fines/:fineId', fineController.deleteFine.bind(fineController));
+router.delete('/agreements/:agreementId/fines/:fineId', fineController.closeFine.bind(fineController));
 
 export default router;

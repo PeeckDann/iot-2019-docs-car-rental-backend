@@ -5,6 +5,7 @@ import db from '../db';
 class Agreement extends ExtendedModel {
   public issueingDate!: number;
   public expectedReturnDate!: number;
+  public isArchived!: boolean;
 }
 
 Agreement.init(

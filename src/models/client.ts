@@ -4,12 +4,17 @@ import db from '../db';
 import { generateDefaultClientData } from './hooks/client';
 
 class Client extends ExtendedModel {
+  public avatar!: string;
   public email!: string;
   public password!: string;
 }
 
 Client.init(
   {
+    avatar: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
     email: {
       type: DataTypes.STRING(50),
       allowNull: false

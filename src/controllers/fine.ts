@@ -1,12 +1,16 @@
 import { Request, Response } from 'express';
-import { handleEndpointError } from '../utils/errorHandler';
+import { handleEndpointError, CustomError } from '../utils/errorHandler';
 import FineDAO from '../dao/fine';
+import AmountOfMoneyDAO from '../dao/amountOfMoney';
+import AmountOfMoney from '../models/amountOfMoney';
 
 export default class FineController {
   private fineDAO: FineDAO;
+  private amountOfMoneyDAO: AmountOfMoneyDAO;
 
   constructor() {
     this.fineDAO = new FineDAO();
+    this.amountOfMoneyDAO = new AmountOfMoneyDAO();
   }
 
   public async getFineById(req: Request, res: Response) {
@@ -60,13 +64,29 @@ export default class FineController {
     }
   }
 
-  public async deleteFine(req: Request, res: Response) {
+  public async closeFine(req: Request, res: Response) {
     try {
+      //@ts-ignore
+      const clientId = req.client.id;
       const { fineId } = req.params;
+
+      await this.updateClientBalance(clientId, fineId);
       await this.fineDAO.deleteFine(fineId);
       res.sendStatus(200);
     } catch (e) {
       handleEndpointError(e, res, 400);
     }
+  }
+
+  private async updateClientBalance(clientId, fineId) {
+    const fineAmount = await this.amountOfMoneyDAO.getFineAmount(fineId);
+    const clientBalance = await this.amountOfMoneyDAO.getBalance(clientId);
+    //@ts-ignore
+    const newClientBalance = AmountOfMoney.subtractAmounts(clientBalance, fineAmount);
+    if (!newClientBalance) {
+      throw new CustomError('Balance is not sufficient!');
+    }
+
+    await this.amountOfMoneyDAO.updateBalance(clientId, newClientBalance);
   }
 }
