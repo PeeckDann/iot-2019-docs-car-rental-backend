@@ -11,11 +11,11 @@ class Agreement extends ExtendedModel {
 Agreement.init(
   {
     issueingDate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false
     },
     expectedReturnDate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false
     },
     isArchived: {
